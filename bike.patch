@@ -1,0 +1,61 @@
+	diff -pruN BikeFIRMA-backend/config/config.js bike/config/config.js
+--- BikeFIRMA-backend/config/config.js	2013-10-11 11:42:08.433660094 -0300
++++ bike/config/config.js	2013-10-11 11:13:04.000000000 -0300
+@@ -4,7 +4,12 @@
+  */
+ 
+ var path = require('path')
+-var rootPath = path.resolve(__dirname + '../..')
++root = process.env.OPENSHIFT_REPO_DIR
++
++ Leonardo. A soluÂjkhuyefjiwehgfijwehfigweifdgfgvfdhdesfkjenbhjhbvar rootPath = path.resolve(root)
++
++mongourl = process.env.OPENSHIFT_MONGODB_DB_URL
++
+ 
+ /**
+  * Expose config
+@@ -13,8 +18,8 @@ var rootPath = path.resolve(__dirname +
+ module.exports = {
+   development: {
+     root: rootPath,
+-    db: 'mongodb://localhost/your_app_db_dev',
+-    url: 'http://boxysean.com:3000'
++    db: mongourl + process.env.OPENSHIFT_APP_NAME,
++    //url: 'http://boxysean.com:3000'
+   },
+   test: {
+     root: rootPath,
+diff -pruN BikeFIRMA-backend/config/keys.js bike/config/keys.js
+--- BikeFIRMA-backend/config/keys.js	1969-12-31 21:00:00.000000000 -0300
++++ bike/config/keys.js	2013-10-11 11:06:37.000000000 -0300
+@@ -0,0 +1,8 @@
++
++module.exports = {
++    TWITTER_CONSUMER_KEY: "asdflkadjsflkasdjflkadsjf",
++    TWITTER_CONSUMER_SECRET: "asdkfjadslkfjasdlkfjads",
++
++    FACEBOOK_APP_ID: "asdfjdsalfkjasdlf",
++    FACEBOOK_APP_SECRET: "laksdjfladksjfasdlkjf"
++}
+diff -pruN BikeFIRMA-backend/.gitignore bike/.gitignore
+--- BikeFIRMA-backend/.gitignore	2013-10-11 11:42:08.429660079 -0300
++++ bike/.gitignore	2013-10-11 11:50:32.028157301 -0300
+@@ -1,2 +1 @@
+ node_modules
+-config/keys.js
+diff -pruN BikeFIRMA-backend/server.js bike/server.js
+--- BikeFIRMA-backend/server.js	2013-10-11 11:42:08.433660094 -0300
++++ bike/server.js	2013-10-11 11:27:59.000000000 -0300
+@@ -32,8 +32,9 @@ require('./config/express')(app, config,
+ require('./config/routes')(app, passport)
+ 
+ // Start the app by listening on <port>
+-var port = process.env.PORT || 3000
+-app.listen(port)
++var ip  = process.env.OPENSHIFT_NODEJS_IP
++var port = process.env.OPENSHIFT_NODEJS_PORT || 3000
++app.listen(port,ip)
+ console.log('Express app started on port '+port)
+ 
+ // Expose app
